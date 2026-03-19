@@ -1,0 +1,17 @@
+[
+  {
+    "name": "customer-en",
+    "prompt": "Create customer Acme AS",
+    "files": []
+  },
+  {
+    "name": "employee-nb",
+    "prompt": "Opprett en ansatt med navn Ola Nordmann, ola@example.org",
+    "files": []
+  },
+  {
+    "name": "invoice-en",
+    "prompt": "Create invoice for customer Acme AS amount 1200 quantity 2",
+    "files": []
+  }
+]

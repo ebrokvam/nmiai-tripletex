@@ -1,0 +1,32 @@
+[
+  {
+    "name": "customer-en",
+    "prompt": "Create customer Acme AS",
+    "files": []
+  },
+  {
+    "name": "employee-nb",
+    "prompt": "Opprett en ansatt med navn Ola Nordmann, ola@example.org",
+    "files": []
+  },
+  {
+    "name": "invoice-en",
+    "prompt": "Create invoice for customer Acme AS amount 1200 quantity 2",
+    "files": []
+  },
+  {
+    "name": "customer-pt-it1",
+    "prompt": "Criar cliente Aurora Tech AS",
+    "files": []
+  },
+  {
+    "name": "customer-de-it1",
+    "prompt": "Kunde erstellen Nordlicht GmbH",
+    "files": []
+  },
+  {
+    "name": "invoice-es-it1",
+    "prompt": "Crear factura para cliente Acme AS importe 1400 cantidad 2",
+    "files": []
+  }
+]

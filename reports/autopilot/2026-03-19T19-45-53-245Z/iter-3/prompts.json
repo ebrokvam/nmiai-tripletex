@@ -1,0 +1,62 @@
+[
+  {
+    "name": "customer-en",
+    "prompt": "Create customer Acme AS",
+    "files": []
+  },
+  {
+    "name": "employee-nb",
+    "prompt": "Opprett en ansatt med navn Ola Nordmann, ola@example.org",
+    "files": []
+  },
+  {
+    "name": "invoice-en",
+    "prompt": "Create invoice for customer Acme AS amount 1200 quantity 2",
+    "files": []
+  },
+  {
+    "name": "customer-pt-it1",
+    "prompt": "Criar cliente Aurora Tech AS",
+    "files": []
+  },
+  {
+    "name": "customer-de-it1",
+    "prompt": "Kunde erstellen Nordlicht GmbH",
+    "files": []
+  },
+  {
+    "name": "invoice-basic-it3",
+    "prompt": "Create invoice for customer Northwind AS amount 950 quantity 1",
+    "files": []
+  },
+  {
+    "name": "invoice-with-dates-it3",
+    "prompt": "Create invoice for customer Boreal AS amount 1200 quantity 2 invoiceDate 2026-03-19 dueDate 2026-03-26",
+    "files": []
+  },
+  {
+    "name": "invoice-nb-it3",
+    "prompt": "Opprett faktura for kunde Fjell Data AS beløp 1800 antall 3",
+    "files": []
+  },
+  {
+    "name": "employee-en-it3",
+    "prompt": "Create employee Emma Hansen emma.hansen@example.org",
+    "files": []
+  },
+  {
+    "name": "employee-nb-it3",
+    "prompt": "Opprett en ansatt med navn Markus Nilsen, markus.nilsen@example.org",
+    "files": []
+  },
+  {
+    "name": "employee-fr-it3",
+    "prompt": "Créer employé Claire Martin claire.martin@example.org",
+    "files": []
+  },
+  {
+    "name": "invoice-es-it3",
+    "prompt": "Crear factura para cliente Acme AS importe 1400 cantidad 2",
+    "files": []
+  }
+]

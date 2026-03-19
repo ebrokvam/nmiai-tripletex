@@ -1,0 +1,277 @@
+{
+  "endpoint": "http://127.0.0.1:8000/solve",
+  "totalMs": 58379,
+  "timestamp": "2026-03-19T19:47:13.012Z",
+  "results": [
+    {
+      "name": "customer-en",
+      "prompt": "Create customer Acme AS",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 2561,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":true,\"planner\":\"llm\",\"kind\":\"create_customer\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": true,
+          "planner": "llm",
+          "kind": "create_customer"
+        }
+      },
+      "debug": {
+        "ok": true,
+        "planner": "llm",
+        "kind": "create_customer"
+      }
+    },
+    {
+      "name": "employee-nb",
+      "prompt": "Opprett en ansatt med navn Ola Nordmann, ola@example.org",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 3205,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_employee\",\"error\":\"Tripletex POST /employee failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":\\\"department.id\\\",\\\"message\\\":\\\"This field cannot be empty.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"988f1335-6154-41a7-b243-b450830f7329\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_employee",
+          "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"988f1335-6154-41a7-b243-b450830f7329\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_employee",
+        "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"988f1335-6154-41a7-b243-b450830f7329\"}"
+      }
+    },
+    {
+      "name": "invoice-en",
+      "prompt": "Create invoice for customer Acme AS amount 1200 quantity 2",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 4287,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_invoice\",\"error\":\"Tripletex POST /invoice failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":null,\\\"message\\\":\\\"Invoice cannot be created before a company bank account number is registered.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"808c3ee2-4645-4697-8261-a235f210507d\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_invoice",
+          "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"808c3ee2-4645-4697-8261-a235f210507d\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_invoice",
+        "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"808c3ee2-4645-4697-8261-a235f210507d\"}"
+      }
+    },
+    {
+      "name": "customer-pt-it1",
+      "prompt": "Criar cliente Aurora Tech AS",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 2906,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":true,\"planner\":\"llm\",\"kind\":\"create_customer\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": true,
+          "planner": "llm",
+          "kind": "create_customer"
+        }
+      },
+      "debug": {
+        "ok": true,
+        "planner": "llm",
+        "kind": "create_customer"
+      }
+    },
+    {
+      "name": "customer-de-it1",
+      "prompt": "Kunde erstellen Nordlicht GmbH",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 6839,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":true,\"planner\":\"llm\",\"kind\":\"create_customer\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": true,
+          "planner": "llm",
+          "kind": "create_customer"
+        }
+      },
+      "debug": {
+        "ok": true,
+        "planner": "llm",
+        "kind": "create_customer"
+      }
+    },
+    {
+      "name": "invoice-basic-it2",
+      "prompt": "Create invoice for customer Northwind AS amount 950 quantity 1",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 3770,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_invoice\",\"error\":\"Tripletex POST /invoice failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":null,\\\"message\\\":\\\"Invoice cannot be created before a company bank account number is registered.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"33465bce-02ed-4b99-8997-d4cc51daf677\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_invoice",
+          "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"33465bce-02ed-4b99-8997-d4cc51daf677\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_invoice",
+        "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"33465bce-02ed-4b99-8997-d4cc51daf677\"}"
+      }
+    },
+    {
+      "name": "invoice-with-dates-it2",
+      "prompt": "Create invoice for customer Boreal AS amount 1200 quantity 2 invoiceDate 2026-03-19 dueDate 2026-03-26",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 11935,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_invoice\",\"error\":\"Tripletex POST /invoice failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":null,\\\"message\\\":\\\"Invoice cannot be created before a company bank account number is registered.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"66e90b02-70e7-48a0-b5af-32e5cdfaa292\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_invoice",
+          "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"66e90b02-70e7-48a0-b5af-32e5cdfaa292\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_invoice",
+        "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"66e90b02-70e7-48a0-b5af-32e5cdfaa292\"}"
+      }
+    },
+    {
+      "name": "invoice-nb-it2",
+      "prompt": "Opprett faktura for kunde Fjell Data AS beløp 1800 antall 3",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 9301,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_invoice\",\"error\":\"Tripletex POST /invoice failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":null,\\\"message\\\":\\\"Invoice cannot be created before a company bank account number is registered.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"6392dd02-fe43-4a77-a45b-d7df3b211aeb\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_invoice",
+          "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"6392dd02-fe43-4a77-a45b-d7df3b211aeb\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_invoice",
+        "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"6392dd02-fe43-4a77-a45b-d7df3b211aeb\"}"
+      }
+    },
+    {
+      "name": "employee-en-it2",
+      "prompt": "Create employee Emma Hansen emma.hansen@example.org",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 2901,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_employee\",\"error\":\"Tripletex POST /employee failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":\\\"department.id\\\",\\\"message\\\":\\\"This field cannot be empty.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"8625f7ba-4dd1-4eab-b2a3-84e954089d52\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_employee",
+          "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"8625f7ba-4dd1-4eab-b2a3-84e954089d52\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_employee",
+        "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"8625f7ba-4dd1-4eab-b2a3-84e954089d52\"}"
+      }
+    },
+    {
+      "name": "employee-nb-it2",
+      "prompt": "Opprett en ansatt med navn Markus Nilsen, markus.nilsen@example.org",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 3232,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_employee\",\"error\":\"Tripletex POST /employee failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":\\\"department.id\\\",\\\"message\\\":\\\"This field cannot be empty.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"8de9413b-e218-4388-8749-c4fd62ffe644\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_employee",
+          "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"8de9413b-e218-4388-8749-c4fd62ffe644\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_employee",
+        "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"8de9413b-e218-4388-8749-c4fd62ffe644\"}"
+      }
+    },
+    {
+      "name": "employee-fr-it2",
+      "prompt": "Créer employé Claire Martin claire.martin@example.org",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 2968,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_employee\",\"error\":\"Tripletex POST /employee failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":\\\"department.id\\\",\\\"message\\\":\\\"This field cannot be empty.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"0253b5ac-ee78-456d-be38-6a3f445cffc4\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_employee",
+          "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"0253b5ac-ee78-456d-be38-6a3f445cffc4\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_employee",
+        "error": "Tripletex POST /employee failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":\"department.id\",\"message\":\"This field cannot be empty.\",\"path\":null,\"rootId\":null}],\"requestId\":\"0253b5ac-ee78-456d-be38-6a3f445cffc4\"}"
+      }
+    },
+    {
+      "name": "invoice-es-it2",
+      "prompt": "Crear factura para cliente Acme AS importe 1400 cantidad 2",
+      "ok": false,
+      "status": 200,
+      "elapsedMs": 4474,
+      "responseText": "{\"status\":\"completed\",\"debug\":{\"ok\":false,\"planner\":\"llm\",\"kind\":\"create_invoice\",\"error\":\"Tripletex POST /invoice failed (422): {\\\"status\\\":422,\\\"code\\\":18000,\\\"message\\\":\\\"Validation failed.\\\",\\\"link\\\":\\\"https://tripletex.no/v2-docs/\\\",\\\"developerMessage\\\":\\\"VALIDATION_ERROR\\\",\\\"validationMessages\\\":[{\\\"field\\\":null,\\\"message\\\":\\\"Invoice cannot be created before a company bank account number is registered.\\\",\\\"path\\\":null,\\\"rootId\\\":null}],\\\"requestId\\\":\\\"3b093da9-6817-4864-99e3-922e5528c5a5\\\"}\"}}",
+      "responseJson": {
+        "status": "completed",
+        "debug": {
+          "ok": false,
+          "planner": "llm",
+          "kind": "create_invoice",
+          "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"3b093da9-6817-4864-99e3-922e5528c5a5\"}"
+        }
+      },
+      "debug": {
+        "ok": false,
+        "planner": "llm",
+        "kind": "create_invoice",
+        "error": "Tripletex POST /invoice failed (422): {\"status\":422,\"code\":18000,\"message\":\"Validation failed.\",\"link\":\"https://tripletex.no/v2-docs/\",\"developerMessage\":\"VALIDATION_ERROR\",\"validationMessages\":[{\"field\":null,\"message\":\"Invoice cannot be created before a company bank account number is registered.\",\"path\":null,\"rootId\":null}],\"requestId\":\"3b093da9-6817-4864-99e3-922e5528c5a5\"}"
+      }
+    }
+  ]
+}

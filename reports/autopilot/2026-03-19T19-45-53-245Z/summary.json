@@ -1,0 +1,30 @@
+{
+  "createdAt": "2026-03-19T19:48:00.224Z",
+  "endpoint": "http://127.0.0.1:8000/solve",
+  "iterations": 3,
+  "maxPrompts": 16,
+  "basePromptsFile": "test-prompts.example.json",
+  "iterationSummaries": [
+    {
+      "iteration": 1,
+      "total": 6,
+      "failed": 3,
+      "passed": 3,
+      "reportPath": "/Users/espen.n.brokvam/Documents/Code/nmiai/reports/autopilot/2026-03-19T19-45-53-245Z/iter-1/failure-report.json"
+    },
+    {
+      "iteration": 2,
+      "total": 12,
+      "failed": 9,
+      "passed": 3,
+      "reportPath": "/Users/espen.n.brokvam/Documents/Code/nmiai/reports/autopilot/2026-03-19T19-45-53-245Z/iter-2/failure-report.json"
+    },
+    {
+      "iteration": 3,
+      "total": 12,
+      "failed": 9,
+      "passed": 3,
+      "reportPath": "/Users/espen.n.brokvam/Documents/Code/nmiai/reports/autopilot/2026-03-19T19-45-53-245Z/iter-3/failure-report.json"
+    }
+  ]
+}
