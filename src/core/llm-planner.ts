@@ -1,6 +1,8 @@
 import type { SolveRequestBody } from "../types/solve.js";
 import type { AgentTaskPlan } from "../types/task-plan.js";
 import { startCodexThread } from "./codex-client.js";
+import { COMMON_TASK_PATTERN_GUIDANCE } from "./tripletex-common-task-patterns.js";
+import { buildCommonRequestTemplateCatalog } from "./tripletex-common-request-templates.js";
 
 const LOCAL_OPENAPI_PATH = "./openapi.json";
 
@@ -94,28 +96,31 @@ export async function buildTaskPlanWithLLM(
   const payload = {
     prompt: input.prompt,
     files: filesSummary,
+    common_request_templates: buildCommonRequestTemplateCatalog(),
+    common_task_patterns: COMMON_TASK_PATTERN_GUIDANCE,
     instructions: [
       "Create a compact execution packet for a Tripletex action request.",
       "Supported languages include Norwegian, English, Spanish, Portuguese, Nynorsk, German, French.",
-      `Read the local OpenAPI schema at ${LOCAL_OPENAPI_PATH} before producing the plan to choose the correct endpoints and exact request format.`,
       "Your job is to convert the user request into precise API request templates.",
-      "Search broadly inside the schema before concluding that a task is impossible. Check direct endpoints, related resource groups, and referenced component schemas that may define nested writable objects.",
-      "If a direct endpoint for the exact business phrasing is not obvious, decompose the task into lookups plus the closest supported mutation flow instead of giving up.",
-      "When a mutation endpoint exists but some nested fields must be inferred from related schemas, still return a plan and use placeholders in body_json for unresolved IDs, enum values, or salary-type selections.",
-      "Use format_requirements to explain how placeholders must be resolved from earlier lookups and to record any schema-based assumptions about nested objects.",
-      "Never give up. Always return a plan, even when it is partial, ambiguous, or relies on placeholders and follow-up lookups.",
+      "First inspect common_request_templates and common_task_patterns.",
+      "Use common_task_patterns to choose the flow shape: single creation, create with linking, modify existing, delete or reverse, or multi-step setup.",
+      "When a common_request_templates entry matches the task, copy and adapt it instead of inventing a new request.",
       "Minimize the total number of API requests. Prefer the smallest viable plan that can complete the task safely.",
       "Choose a short intent label and normalize important prompt values into input_arguments.",
       "Use lookup_requests only for requests that resolve IDs or required facts before mutation.",
       "Do not include lookup_requests for optional confirmation, exploratory reads, or data that is already present in the user prompt.",
       "If a mutation can be executed safely from known inputs, return an empty lookup_requests array.",
       "If one lookup can resolve multiple required values, prefer that single lookup over several narrower requests.",
+      "For multi-step setup tasks, include only the dependency chain required for the final outcome, and prefer embedded creation when the schema supports it.",
       "Use mutation_requests for the main write operations. Use an empty array when no write should happen.",
       "For every planned request, fill query_json with the exact query object serialized as a JSON string, or null if none.",
       "For every planned request, fill body_json with the exact minimal request body serialized as a JSON string, or null if none.",
       "Use format_requirements to state precise formatting rules from OpenAPI, such as required nested objects, enums, field formats, or placeholder values that must be substituted from lookup results.",
-      "For payroll and salary tasks, inspect salary transaction, payslip, salary specification, salary type, employee, and salary settings schemas together before deciding whether the task is plannable.",
-      "Always include all schema fields. Use empty arrays or null where not applicable.",
+      "If a mutation endpoint exists but some nested fields must be inferred from related schemas, still return a plan and use placeholders in body_json for unresolved IDs, enum values, or nested object selections.",
+      `Only if the task cannot be achieved through the provided common_request_templates should you inspect the local OpenAPI schema at ${LOCAL_OPENAPI_PATH} to find other endpoints or exact request formats.`,
+      "When using the full schema, search broadly and keep extending the plan until you have the best available lookup-plus-mutation flow for the user request. Check direct endpoints, related resource groups, and referenced component schemas that may define nested writable objects.",
+      "Always return the best available plan, even when it is partial or relies on placeholders and follow-up lookups.",
+      "For payroll and salary tasks, inspect salary transaction, payslip, salary specification, salary type, employee, and salary settings schemas together and return the closest supported end-to-end flow with placeholders where needed.",
     ],
   };
 
