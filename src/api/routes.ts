@@ -27,6 +27,13 @@ export async function registerRoutes(app: FastifyInstance): Promise<void> {
 
         return reply.code(200).send({
           status: "completed",
+          debug: {
+            ok: result.ok,
+            planner: "llm",
+            plan_summary: result.planSummary,
+            planning_error: result.planningError,
+            error: result.error,
+          },
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
@@ -41,6 +48,10 @@ export async function registerRoutes(app: FastifyInstance): Promise<void> {
 
         return reply.code(200).send({
           status: "completed",
+          debug: {
+            ok: false,
+            error: message,
+          },
         });
       }
     },

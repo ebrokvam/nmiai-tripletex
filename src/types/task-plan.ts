@@ -2,8 +2,9 @@ export type PlannedRequest = {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   purpose: string;
-  query_hint?: string | null;
-  body_hint?: string | null;
+  query_json?: string | null;
+  body_json?: string | null;
+  format_requirements: string[];
 };
 
 export type PlannedArgument = {
@@ -12,20 +13,10 @@ export type PlannedArgument = {
 };
 
 export type PlannedTask = {
-  status: "planned";
-  summary: string;
   intent: string;
   input_arguments: PlannedArgument[];
   lookup_requests: PlannedRequest[];
   mutation_requests: PlannedRequest[];
-  verification_requests: PlannedRequest[];
-  stop_conditions: string[];
+  planning_error?: string | null;
 };
-
-export type UnplannableTask = {
-  status: "cannot_plan";
-  reason: string;
-  summary?: string;
-};
-
-export type AgentTaskPlan = PlannedTask | UnplannableTask;
+export type AgentTaskPlan = PlannedTask;

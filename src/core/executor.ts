@@ -5,8 +5,8 @@ import { buildTaskPlanWithLLM } from "./llm-planner.js";
 
 export type SolveExecutionResult = {
   ok: boolean;
-  planStatus: AgentTaskPlan["status"];
   planSummary?: string;
+  planningError?: string;
   error?: string;
 };
 
@@ -14,33 +14,35 @@ export async function executeSolveTask(
   input: SolveRequestBody,
   context?: { runId?: string },
 ): Promise<SolveExecutionResult> {
-  const llmPlan = await buildTaskPlanWithLLM(input);
-
-  console.info(`[solver] plan_status=${llmPlan.status}`);
-  console.info(llmPlan);
-
-  if (llmPlan.status === "cannot_plan") {
+  console.info(input.prompt);
+  let llmPlan: AgentTaskPlan;
+  try {
+    llmPlan = await buildTaskPlanWithLLM(input);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.info(`planning failed`);
+    console.info(message);
     return {
       ok: false,
-      planStatus: llmPlan.status,
-      planSummary: llmPlan.summary,
-      error: llmPlan.reason,
+      planningError: message,
+      error: message,
     };
   }
+
+  console.info(`planning complete`);
+  console.info(llmPlan);
 
   const agentResult = await executeWithLLMAgent(input, llmPlan, context);
   if (agentResult.ok) {
     return {
       ok: true,
-      planStatus: llmPlan.status,
-      planSummary: llmPlan.summary,
+      planSummary: llmPlan.intent,
     };
   }
 
   return {
     ok: false,
-    planStatus: llmPlan.status,
-    planSummary: llmPlan.summary,
+    planSummary: llmPlan.intent,
     error: agentResult.error,
   };
 }

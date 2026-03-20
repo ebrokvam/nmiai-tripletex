@@ -13,17 +13,17 @@ set -euo pipefail
 #     }
 #   }'
 
-curl -sS -X POST "http://127.0.0.1:8000/solve" \
-  --max-time 300 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "Run payroll for Emily Lewis (emily.lewis@example.org) for this month. The base salary is 53400 NOK. Add a one-time bonus of 16900 NOK on top of the base salary.",
-    "files": [],
-    "tripletex_credentials": {
-      "base_url": "https://kkpqfuj-amager.tripletex.dev/v2",
-      "session_token": "eyJ0b2tlbklkIjoyMTQ3NjI5NzU4LCJ0b2tlbiI6IjU3OTQ4ZTVlLTBjNGUtNDAzNi1iY2NkLWI1MjU5NzVlMjYxYSJ9"
-    }
-  }'
+# curl -sS -X POST "http://127.0.0.1:8000/solve" \
+#   --max-time 300 \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "prompt": "Run payroll for Emily Lewis (emily.lewis@example.org) for this month. The base salary is 53400 NOK. Add a one-time bonus of 16900 NOK on top of the base salary.",
+#     "files": [],
+#     "tripletex_credentials": {
+#       "base_url": "https://kkpqfuj-amager.tripletex.dev/v2",
+#       "session_token": "eyJ0b2tlbklkIjoyMTQ3NjI5NzU4LCJ0b2tlbiI6IjU3OTQ4ZTVlLTBjNGUtNDAzNi1iY2NkLWI1MjU5NzVlMjYxYSJ9"
+#     }
+#   }'
 
 # curl -sS -X POST "http://127.0.0.1:8000/solve" \
 #   --max-time 300 \
@@ -48,3 +48,15 @@ curl -sS -X POST "http://127.0.0.1:8000/solve" \
 #       "session_token": "eyJ0b2tlbklkIjoyMTQ3NjI5NzU4LCJ0b2tlbiI6IjU3OTQ4ZTVlLTBjNGUtNDAzNi1iY2NkLWI1MjU5NzVlMjYxYSJ9"
 #     }
 #   }'
+
+curl -sS -X POST "http://127.0.0.1:8000/solve" \
+  --max-time 300 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Vi har mottatt faktura INV-2026-4085 fra leverandøren Snøhetta AS (org.nr 861790029) på 44450 kr inklusiv MVA. Beløpet gjelder kontortjenester (konto 6300). Registrer leverandørfakturaen med korrekt inngående MVA (25 %).",
+    "files": [],
+    "tripletex_credentials": {
+      "base_url": "https://kkpqfuj-amager.tripletex.dev/v2",
+      "session_token": "eyJ0b2tlbklkIjoyMTQ3NjI5NzU4LCJ0b2tlbiI6IjU3OTQ4ZTVlLTBjNGUtNDAzNi1iY2NkLWI1MjU5NzVlMjYxYSJ9"
+    }
+  }'

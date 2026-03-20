@@ -21,8 +21,8 @@ type SolveLogEntry = {
   result: {
     ok: boolean;
     planner?: "llm";
-    plan_status?: string;
     plan_summary?: string;
+    planning_error?: string;
     error?: string;
   };
   duration_ms: number;
@@ -57,10 +57,12 @@ export function writeSolveLog(input: {
     },
     result: {
       ok: input.result.ok,
-      plan_status:
-        "planStatus" in input.result ? input.result.planStatus : undefined,
       plan_summary:
         "planSummary" in input.result ? input.result.planSummary : undefined,
+      planning_error:
+        "planningError" in input.result
+          ? input.result.planningError
+          : undefined,
       error: "error" in input.result ? input.result.error : undefined,
     },
     duration_ms: input.durationMs,
