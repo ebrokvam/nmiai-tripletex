@@ -34,9 +34,10 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
-      "Add only the filters needed for the task, typically one or more of: number, productNumber, name, supplierId, vatTypeId, accountId, departmentId.",
+      "Add only the filters needed for the task, typically one of: number, productNumber, name, supplierId, vatTypeId, accountId, departmentId.",
       "Keep fields minimal. Request only the fields needed by later steps, often just id.",
-      "Query values must be strings when sent to the Tripletex MCP tool.",
+      "Use string values for ordinary query parameters and a string array only for query parameters that are defined as arrays in the schema, such as productNumber.",
+      "When resolving multiple product numbers, prefer a single batched productNumber array lookup if the task needs multiple products.",
       "Use this only when a product ID or product facts are required before a mutation.",
     ],
   },
@@ -156,10 +157,13 @@ export const COMMON_MUTATION_REQUEST_TEMPLATES: PlannedRequest[] = [
     purpose: "Create a new employee record.",
     query_json: null,
     body_json:
-      '{"firstName":"<first_name>","lastName":"<last_name>","email":"<email_optional>","employeeNumber":"<employee_number_optional>"}',
+      '{"firstName":"<first_name>","lastName":"<last_name>","email":"<email_optional>","employeeNumber":"<employee_number_optional>","dateOfBirth":"<YYYY-MM-DD_optional>"}',
     format_requirements: [
       "Body shape follows the Employee schema in OpenAPI.",
       "Use only fields supported by the schema and omit unknown placeholders that are not needed.",
+      "Use dateOfBirth for birth date. Do not use a top-level birthDate field.",
+      "If an employment start date is needed, put it under employments[].startDate rather than a top-level startDate field.",
+      "If validation shows that userType or department.id is required in the target environment, add those schema-supported fields and resolve department first if needed.",
       "If department, category, employment, or user-type objects are needed, resolve IDs first and send nested objects in the schema-compatible shape.",
     ],
   },
@@ -195,10 +199,11 @@ export const COMMON_MUTATION_REQUEST_TEMPLATES: PlannedRequest[] = [
     purpose: "Create an outgoing invoice, optionally creating or embedding related orders and order lines.",
     query_json: '{"sendToCustomer":"false"}',
     body_json:
-      '{"customer":{"id":"<customer_id>"},"invoiceDate":"<YYYY-MM-DD>","orderLines":[{"description":"<line_description>","count":"<quantity>","priceExcludingVatCurrency":"<unit_price_ex_vat>"}]}',
+      '{"customer":{"id":"<customer_id>"},"invoiceDate":"<YYYY-MM-DD>","deliveryDate":"<YYYY-MM-DD_optional>","orderLines":[{"description":"<line_description>","count":"<quantity>","unitPriceExcludingVatCurrency":"<unit_price_ex_vat>"}]}',
     format_requirements: [
       "Body shape follows the Invoice schema in OpenAPI.",
       "customer.id is typically required for direct invoice creation unless the schema supports another embedded flow.",
+      "Embedded orderLines follow the OrderLine schema. Use unitPriceExcludingVatCurrency rather than priceExcludingVatCurrency.",
       "Add optional query parameters such as paymentTypeId or paidAmount only when the task explicitly requires them.",
       "If creating an order first is the simpler supported flow, prefer POST /order followed by POST /invoice.",
     ],
@@ -209,9 +214,11 @@ export const COMMON_MUTATION_REQUEST_TEMPLATES: PlannedRequest[] = [
     purpose: "Create a new order that can later be invoiced.",
     query_json: null,
     body_json:
-      '{"customer":{"id":"<customer_id>"},"orderDate":"<YYYY-MM-DD>","orderLines":[{"description":"<line_description>","count":"<quantity>","priceExcludingVatCurrency":"<unit_price_ex_vat>"}]}',
+      '{"customer":{"id":"<customer_id>"},"orderDate":"<YYYY-MM-DD>","deliveryDate":"<YYYY-MM-DD>","orderLines":[{"description":"<line_description>","count":"<quantity>","unitPriceExcludingVatCurrency":"<unit_price_ex_vat>"}]}',
     format_requirements: [
       "Body shape follows the Order schema in OpenAPI.",
+      "Include deliveryDate when required by the API for order creation. Use the requested order or invoice date if no separate delivery date is provided.",
+      "Embedded orderLines follow the OrderLine schema. Use unitPriceExcludingVatCurrency rather than priceExcludingVatCurrency.",
       "Use nested customer, project, department, contact, or orderLines objects only when needed and only in schema-compatible shape.",
       "Prefer POST /order as the default linking step before POST /invoice when the task is to invoice a customer for goods or services.",
     ],
@@ -222,9 +229,11 @@ export const COMMON_MUTATION_REQUEST_TEMPLATES: PlannedRequest[] = [
     purpose: "Create a travel expense report.",
     query_json: null,
     body_json:
-      '{"employee":{"id":"<employee_id>"},"date":"<YYYY-MM-DD>","title":"<travel_title>"}',
+      '{"employee":{"id":"<employee_id>"},"title":"<travel_title>","travelDetails":{"departureDate":"<YYYY-MM-DD_optional>","returnDate":"<YYYY-MM-DD_optional>"}}',
     format_requirements: [
       "Body shape follows the TravelExpense schema in OpenAPI.",
+      "Do not use a top-level date field because TravelExpense.date is read-only in the schema.",
+      "When travel dates are needed, use travelDetails.departureDate and travelDetails.returnDate.",
       "If project, department, costs, mileage allowances, per-diem compensations, or VAT objects are needed, resolve IDs first and send nested objects in schema-compatible shape.",
       "Prefer the minimal body needed for the requested expense flow.",
     ],
@@ -273,11 +282,11 @@ export const COMMON_MUTATION_REQUEST_TEMPLATES: PlannedRequest[] = [
     purpose: "Create a voucher with postings.",
     query_json: '{"sendToLedger":"true"}',
     body_json:
-      '{"date":"<YYYY-MM-DD>","description":"<voucher_description>","postings":[{"account":{"id":"<account_id>"},"amount":"<gross_amount>"}]}',
+      '{"date":"<YYYY-MM-DD>","description":"<voucher_description>","postings":[{"account":{"id":"<account_id>"},"amountGross":"<gross_amount>"}]}',
     format_requirements: [
       "Body shape follows the Voucher schema in OpenAPI.",
       "A voucher must include schema-compatible postings; resolve account and other referenced IDs before mutation.",
-      "Amounts should be rounded to 2 decimals, matching the OpenAPI summary for /ledger/voucher POST.",
+      "Use gross posting amounts, matching the OpenAPI summary for /ledger/voucher POST. Amounts should be rounded to 2 decimals.",
     ],
   },
 ];

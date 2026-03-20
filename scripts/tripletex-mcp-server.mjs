@@ -36,7 +36,7 @@ server.registerTool(
         .min(1)
         .describe("API path starting with /, for example /customer"),
       query: z
-        .record(z.string(), z.string())
+        .record(z.string(), z.union([z.string(), z.array(z.string())]))
         .optional()
         .describe("Optional query parameters"),
       body: z.unknown().optional().describe("Optional JSON request body"),
@@ -117,6 +117,13 @@ function buildUrl(base, path, query) {
   const url = new URL(path.replace(/^\//, ""), normalizedBase);
 
   for (const [key, value] of Object.entries(query ?? {})) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        url.searchParams.append(key, item);
+      }
+      continue;
+    }
+
     url.searchParams.set(key, value);
   }
 

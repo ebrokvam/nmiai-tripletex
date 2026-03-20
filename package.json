@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "check": "tsc --noEmit",
+    "cloudflare:tunnel": "npx cloudflared tunnel --url http://127.0.0.1:8000",
+    "cloudflare:test": "bash scripts/test-cloudflare-tunnel.sh",
     "solve:customer": "bash scripts/solve-customer.sh",
     "solve:roshan": "bash scripts/solve-roshan.sh"
   },
