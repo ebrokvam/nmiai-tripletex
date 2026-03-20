@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { SolveRequestBody } from "../types/solve.js";
+import type { AgentTaskPlan } from "../types/task-plan.js";
 import type { SolveExecutionResult } from "./executor.js";
 
 type SolveLogEntry = {
@@ -21,7 +22,6 @@ type SolveLogEntry = {
   result: {
     ok: boolean;
     planner?: "llm";
-    plan_summary?: string;
     planning_error?: string;
     error?: string;
   };
@@ -57,8 +57,6 @@ export function writeSolveLog(input: {
     },
     result: {
       ok: input.result.ok,
-      plan_summary:
-        "planSummary" in input.result ? input.result.planSummary : undefined,
       planning_error:
         "planningError" in input.result
           ? input.result.planningError
@@ -73,6 +71,20 @@ export function writeSolveLog(input: {
   writeFileSync(
     resolve(runDirectory, "solve-log.json"),
     JSON.stringify(entry, null, 2),
+    "utf8",
+  );
+}
+
+export function writePlanLog(input: {
+  runId?: string;
+  plan: AgentTaskPlan;
+}): void {
+  const id = input.runId ?? new Date().toISOString().replace(/[:.]/g, "-");
+  const runDirectory = resolve(process.cwd(), ".solve-logs", "runs", id);
+  mkdirSync(runDirectory, { recursive: true });
+  writeFileSync(
+    resolve(runDirectory, "planned-task.json"),
+    JSON.stringify(input.plan, null, 2),
     "utf8",
   );
 }

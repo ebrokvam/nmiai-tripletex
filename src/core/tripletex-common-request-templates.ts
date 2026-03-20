@@ -5,11 +5,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/employee",
     purpose: "Find employees by identifying fields before payroll, project, travel expense, or assignment mutations.",
-    query_json:
-      '{"count":"20","fields":"id,firstName,lastName,displayName,email,employeeNumber"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: id, firstName, lastName, employeeNumber, email, departmentId.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Prefer this lookup only when an employee ID or employee facts are required before a mutation.",
     ],
@@ -18,11 +18,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/customer",
     purpose: "Find customers by org number, name, account number, or email before invoice, order, or project mutations.",
-    query_json:
-      '{"count":"20","fields":"id,name,displayName,organizationNumber,email,customerNumber"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: id, organizationNumber, customerName, customerAccountNumber, email, invoiceEmail.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Use a single customer lookup when it can resolve all needed customer identifiers for later mutations.",
     ],
@@ -31,11 +31,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/product",
     purpose: "Find products by number, name, supplier, account, or VAT-related fields before invoice or order mutations.",
-    query_json:
-      '{"count":"20","fields":"id,name,number,displayName,priceExcludingVatCurrency,priceIncludingVatCurrency"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: number, productNumber, name, supplierId, vatTypeId, accountId, departmentId.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Use this only when a product ID or product facts are required before a mutation.",
     ],
@@ -45,10 +45,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     path: "/invoice",
     purpose: "Find charged outgoing invoices by invoice number, customer, voucher, or date window.",
     query_json:
-      '{"invoiceDateFrom":"<YYYY-MM-DD>","invoiceDateTo":"<YYYY-MM-DD>","count":"20","fields":"id,invoiceNumber,invoiceDate,customer"}',
+      '{"invoiceDateFrom":"<YYYY-MM-DD>","invoiceDateTo":"<YYYY-MM-DD>","count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "invoiceDateFrom and invoiceDateTo are required by the schema for /invoice GET.",
+      "Keep fields minimal. Request only the fields needed by later steps. Add amount or customer fields only if the payment or follow-up flow requires them.",
       "Add optional filters only when needed, such as id, invoiceNumber, voucherId, customerId, or kid.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
     ],
@@ -58,10 +59,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     path: "/order",
     purpose: "Find orders by order number, customer, or date window before invoicing or update flows.",
     query_json:
-      '{"orderDateFrom":"<YYYY-MM-DD>","orderDateTo":"<YYYY-MM-DD>","count":"20","fields":"id,number,orderDate,customer"}',
+      '{"orderDateFrom":"<YYYY-MM-DD>","orderDateTo":"<YYYY-MM-DD>","count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "orderDateFrom and orderDateTo are required by the schema for /order GET.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Add optional filters only when needed, such as id, number, customerId, deliveryComment, isClosed, or isSubscription.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
     ],
@@ -70,11 +72,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/travelExpense",
     purpose: "Find travel expenses by employee, project, department, date range, or state before reimbursement or review flows.",
-    query_json:
-      '{"count":"20","fields":"id,number,title,date,state,employee,project"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: employeeId, projectId, departmentId, departureDateFrom, returnDateTo, state.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id or state.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Use this only when travel expense identifiers or state are required before a later action.",
     ],
@@ -83,11 +85,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/project",
     purpose: "Find projects by id, name, number, customer, department, or manager before time, invoice, or project mutations.",
-    query_json:
-      '{"count":"20","fields":"id,name,number,displayName,customer,projectManager"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: id, name, number, customerId, projectManagerId, departmentId, isClosed.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Prefer one project lookup that resolves all required identifiers for downstream mutations.",
     ],
@@ -96,11 +98,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/department",
     purpose: "Find departments by id, name, number, or manager before employee, project, or account mutations.",
-    query_json:
-      '{"count":"20","fields":"id,name,departmentNumber,displayName,departmentManager"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: id, name, departmentNumber, departmentManagerId.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
     ],
   },
@@ -108,11 +110,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     method: "GET",
     path: "/ledger/account",
     purpose: "Find chart-of-account entries by account number, id, ledger type, or supplier-invoice applicability.",
-    query_json:
-      '{"count":"20","fields":"id,number,name,displayName,ledgerType,isApplicableForSupplierInvoice"}',
+    query_json: '{"count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "Add only the filters needed for the task, typically one or more of: id, number, ledgerType, isApplicableForSupplierInvoice, isBankAccount, isInactive.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
       "Use this before supplier-invoice or voucher mutations only when an account ID must be resolved.",
     ],
@@ -122,10 +124,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     path: "/ledger/posting",
     purpose: "Find ledger postings by required date range and optional account, supplier, customer, employee, project, or posting type filters.",
     query_json:
-      '{"dateFrom":"<YYYY-MM-DD>","dateTo":"<YYYY-MM-DD>","count":"20","fields":"date,amount,account,customer,supplier,project,voucher"}',
+      '{"dateFrom":"<YYYY-MM-DD>","dateTo":"<YYYY-MM-DD>","count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "dateFrom and dateTo are required by the schema for /ledger/posting GET.",
+      "Keep fields minimal. Request only the fields needed by later steps. Add amount, account, or voucher fields only if the follow-up flow requires them.",
       "Add optional filters only when needed, such as accountId, supplierId, customerId, employeeId, departmentId, projectId, productId, type, or openPostings.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
     ],
@@ -135,10 +138,11 @@ export const COMMON_LOOKUP_REQUEST_TEMPLATES: PlannedRequest[] = [
     path: "/ledger/voucher",
     purpose: "Find vouchers by number, id, voucher type, or required date range before reversals, deletions, or follow-up bookkeeping.",
     query_json:
-      '{"dateFrom":"<YYYY-MM-DD>","dateTo":"<YYYY-MM-DD>","count":"20","fields":"id,number,date,description,voucherType"}',
+      '{"dateFrom":"<YYYY-MM-DD>","dateTo":"<YYYY-MM-DD>","count":"20","fields":"id"}',
     body_json: null,
     format_requirements: [
       "dateFrom and dateTo are required by the schema for /ledger/voucher GET.",
+      "Keep fields minimal. Request only the fields needed by later steps, often just id.",
       "Add optional filters only when needed, such as id, number, numberFrom, numberTo, or typeId.",
       "Query values must be strings when sent to the Tripletex MCP tool.",
     ],

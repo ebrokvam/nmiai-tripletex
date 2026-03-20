@@ -42,8 +42,6 @@ Authenticate Codex in the same environment (`codex login`) before starting the s
   "debug": {
     "ok": false,
     "planner": "llm",
-    "plan_status": "planned",
-    "plan_summary": "Create and send an invoice for the requested customer",
     "error": "Tripletex POST /order failed ..."
   }
 }
@@ -57,7 +55,7 @@ Each `/solve` request is persisted locally with redacted credentials:
 - `.solve-logs/runs/<timestamp>/solve-log.json`
 - `.solve-logs/runs/<timestamp>/http-requests.json`
 
-Stored fields include prompt, planning status/summary, success/failure, error message, duration, and all HTTP requests made during the run. JSON request and response bodies are pretty-printed into the consolidated HTTP log when possible.
+Stored fields include prompt, planning outcome, success/failure, error message, duration, and all HTTP requests made during the run. JSON request and response bodies are pretty-printed into the consolidated HTTP log when possible.
 The folder is fixed to `.solve-logs` in the project root.
 
 ## Test Runner

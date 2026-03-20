@@ -20,7 +20,6 @@ export type SolveResponseBody = {
   debug?: {
     ok: boolean;
     planner?: "llm";
-    plan_summary?: string;
     planning_error?: string;
     error?: string;
   };

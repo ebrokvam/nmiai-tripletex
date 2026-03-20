@@ -2,10 +2,10 @@ import type { SolveRequestBody } from "../types/solve.js";
 import type { AgentTaskPlan } from "../types/task-plan.js";
 import { executeWithLLMAgent } from "./llm-agent-executor.js";
 import { buildTaskPlanWithLLM } from "./llm-planner.js";
+import { writePlanLog } from "./run-log.js";
 
 export type SolveExecutionResult = {
   ok: boolean;
-  planSummary?: string;
   planningError?: string;
   error?: string;
 };
@@ -31,18 +31,20 @@ export async function executeSolveTask(
 
   console.info(`planning complete`);
   console.info(llmPlan);
+  writePlanLog({
+    runId: context?.runId,
+    plan: llmPlan,
+  });
 
   const agentResult = await executeWithLLMAgent(input, llmPlan, context);
   if (agentResult.ok) {
     return {
       ok: true,
-      planSummary: llmPlan.intent,
     };
   }
 
   return {
     ok: false,
-    planSummary: llmPlan.intent,
     error: agentResult.error,
   };
 }

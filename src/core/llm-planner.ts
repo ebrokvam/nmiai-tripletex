@@ -9,19 +9,6 @@ const LOCAL_OPENAPI_PATH = "./openapi.json";
 const PLAN_SCHEMA = {
   type: "object",
   properties: {
-    intent: { type: "string" },
-    input_arguments: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          value: { type: "string" },
-        },
-        required: ["name", "value"],
-        additionalProperties: false,
-      },
-    },
     lookup_requests: {
       type: "array",
       items: {
@@ -75,12 +62,7 @@ const PLAN_SCHEMA = {
       },
     },
   },
-  required: [
-    "intent",
-    "input_arguments",
-    "lookup_requests",
-    "mutation_requests",
-  ],
+  required: ["lookup_requests", "mutation_requests"],
   additionalProperties: false,
 } as const;
 
@@ -106,7 +88,6 @@ export async function buildTaskPlanWithLLM(
       "Use common_task_patterns to choose the flow shape: single creation, create with linking, modify existing, delete or reverse, or multi-step setup.",
       "When a common_request_templates entry matches the task, copy and adapt it instead of inventing a new request.",
       "Minimize the total number of API requests. Prefer the smallest viable plan that can complete the task safely.",
-      "Choose a short intent label and normalize important prompt values into input_arguments.",
       "Use lookup_requests only for requests that resolve IDs or required facts before mutation.",
       "Do not include lookup_requests for optional confirmation, exploratory reads, or data that is already present in the user prompt.",
       "If a mutation can be executed safely from known inputs, return an empty lookup_requests array.",
@@ -114,6 +95,8 @@ export async function buildTaskPlanWithLLM(
       "For multi-step setup tasks, include only the dependency chain required for the final outcome, and prefer embedded creation when the schema supports it.",
       "Use mutation_requests for the main write operations. Use an empty array when no write should happen.",
       "For every planned request, fill query_json with the exact query object serialized as a JSON string, or null if none.",
+      "For GET requests, request only the fields needed for later steps. Do not include extra fields for convenience.",
+      'Use "fields":"*" only when the full entity shape must be inspected to resolve an uncertain field, nested object, or schema mismatch.',
       "For every planned request, fill body_json with the exact minimal request body serialized as a JSON string, or null if none.",
       "Use format_requirements to state precise formatting rules from OpenAPI, such as required nested objects, enums, field formats, or placeholder values that must be substituted from lookup results.",
       "If a mutation endpoint exists but some nested fields must be inferred from related schemas, still return a plan and use placeholders in body_json for unresolved IDs, enum values, or nested object selections.",
@@ -150,9 +133,7 @@ function parsePlan(raw: string): AgentTaskPlan | undefined {
     return undefined;
   }
 
-  return typeof parsed.intent === "string" &&
-    Array.isArray(parsed.input_arguments) &&
-    Array.isArray(parsed.lookup_requests) &&
+  return Array.isArray(parsed.lookup_requests) &&
     Array.isArray(parsed.mutation_requests)
     ? parsed
     : undefined;

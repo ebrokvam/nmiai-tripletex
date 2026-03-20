@@ -7,14 +7,7 @@ export type PlannedRequest = {
   format_requirements: string[];
 };
 
-export type PlannedArgument = {
-  name: string;
-  value: string;
-};
-
 export type PlannedTask = {
-  intent: string;
-  input_arguments: PlannedArgument[];
   lookup_requests: PlannedRequest[];
   mutation_requests: PlannedRequest[];
   planning_error?: string | null;

@@ -30,7 +30,6 @@ export async function registerRoutes(app: FastifyInstance): Promise<void> {
           debug: {
             ok: result.ok,
             planner: "llm",
-            plan_summary: result.planSummary,
             planning_error: result.planningError,
             error: result.error,
           },
