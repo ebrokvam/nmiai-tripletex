@@ -47,7 +47,9 @@ server.registerTool(
       throw new Error("path must start with '/'");
     }
 
-    const url = buildUrl(baseUrl, path, query);
+    validateRequestShape({ query, body });
+    const normalizedQuery = normalizeQuery(query ?? null);
+    const url = buildUrl(baseUrl, path, normalizedQuery);
     const authHeader = `Basic ${Buffer.from(`0:${sessionToken}`).toString("base64")}`;
 
     let response;
@@ -79,6 +81,8 @@ server.registerTool(
       method,
       path,
       query: query ?? null,
+      normalized_query: normalizedQuery,
+      request_body: body ?? null,
       url,
       body: parsedBody,
       error: networkError ?? null,
@@ -89,6 +93,8 @@ server.registerTool(
       method,
       path,
       query: query ?? null,
+      normalized_query: normalizedQuery,
+      request_body: body ?? null,
       url,
       status: result.status,
       ok: result.ok,
@@ -165,4 +171,47 @@ function parseExistingLog(logPath) {
   } catch {
     return [];
   }
+}
+
+function validateRequestShape({ query, body }) {
+  if (query && typeof query !== "object") {
+    throw new Error("query must be an object with string values or arrays of strings.");
+  }
+
+  for (const [key, value] of Object.entries(query ?? {})) {
+    if (typeof value === "string") {
+      continue;
+    }
+
+    if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
+      throw new Error(`query.${key} must be a string or array of strings.`);
+    }
+  }
+
+  if (
+    body !== undefined &&
+    (body === null || typeof body !== "object" || Array.isArray(body))
+  ) {
+    throw new Error("body must be a JSON object when provided.");
+  }
+}
+
+function normalizeQuery(query) {
+  if (!query) {
+    return null;
+  }
+
+  const normalized = { ...query };
+  if (typeof normalized.fields === "string") {
+    normalized.fields = normalizeFieldsFilter(normalized.fields);
+  }
+  return normalized;
+}
+
+function normalizeFieldsFilter(fields) {
+  if (!fields.includes(".") || fields.includes("(")) {
+    return fields;
+  }
+
+  return fields.replace(/\b([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\b/g, "$1($2)");
 }
