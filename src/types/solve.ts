@@ -19,8 +19,9 @@ export type SolveResponseBody = {
   status: "completed";
   debug?: {
     ok: boolean;
-    planner?: "llm" | "rules";
-    kind?: string;
+    planner?: "llm";
+    plan_status?: "planned" | "cannot_plan";
+    plan_summary?: string;
     error?: string;
   };
 };

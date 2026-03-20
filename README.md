@@ -12,7 +12,7 @@ Minimal Node.js starter for the Tripletex challenge with a clean architecture sp
 ```bash
 npm install
 cp .env.example .env
-# edit .env and set OPENAI_API_KEY
+# run codex login in this environment
 npm run dev
 ```
 
@@ -20,26 +20,21 @@ Server starts at `http://localhost:8000`.
 
 ## LLM Planner (recommended)
 
-This project now supports an OpenAI-based planner for multilingual prompt interpretation.
-Execution remains deterministic in handler code.
+This project now supports a two-stage Codex SDK flow:
+1. LLM parsing/planning to normalize the prompt into a structured task guess.
+2. LLM execution in iterative tool steps against Tripletex API endpoints.
 
 Set environment variables in `.env` (recommended):
 
 ```env
-OPENAI_API_KEY=...
-OPENAI_MODEL=gpt-5-mini
-OPENAI_BASE_URL=https://api.openai.com/v1
-SOLVER_DEBUG_RESPONSE=true
-
-# optional local testing fallback when request body omits credentials
+# local testing credentials used by test scripts
 TRIPLETEX_BASE_URL=https://tx-proxy.ainm.no/v2
 TRIPLETEX_SESSION_TOKEN=...
 ```
 
-If `OPENAI_API_KEY` is missing or the LLM call fails, the server falls back to rule-based parsing.
-The server logs why LLM fallback happened.
+Authenticate Codex in the same environment (`codex login`) before starting the server.
 
-When `SOLVER_DEBUG_RESPONSE=true`, `/solve` includes a local debug object:
+`/solve` includes a local debug object:
 
 ```json
 {
@@ -47,11 +42,23 @@ When `SOLVER_DEBUG_RESPONSE=true`, `/solve` includes a local debug object:
   "debug": {
     "ok": false,
     "planner": "llm",
-    "kind": "create_invoice",
+    "plan_status": "planned",
+    "plan_summary": "Create and send an invoice for the requested customer",
     "error": "Tripletex POST /order failed ..."
   }
 }
 ```
+
+## Solve Run Logs
+
+Each `/solve` request is persisted locally with redacted credentials:
+
+- `.solve-logs/runs/<timestamp>/codex-transcript.md`
+- `.solve-logs/runs/<timestamp>/solve-log.json`
+- `.solve-logs/runs/<timestamp>/http-requests.json`
+
+Stored fields include prompt, planning status/summary, success/failure, error message, duration, and all HTTP requests made during the run. JSON request and response bodies are pretty-printed into the consolidated HTTP log when possible.
+The folder is fixed to `.solve-logs` in the project root.
 
 ## Test Runner
 
@@ -117,6 +124,20 @@ Outputs are written to `reports/autopilot/<timestamp>/` with one folder per iter
 - `failure-report.json`
 - final `summary.json`
 
+## Playbook Evaluation
+
+Run fixture-based evaluation by task family:
+
+```bash
+npm run eval:playbook
+```
+
+Optional custom fixture file:
+
+```bash
+npm run eval:playbook -- --fixtures-file fixtures/playbook-fixtures.json
+```
+
 ## Endpoint
 
 ### `POST /solve`
@@ -142,16 +163,11 @@ Returns:
 
 ## Current coverage
 
-This starter includes deterministic handling for:
-
-- create employee (basic patterns)
-- create customer (basic patterns)
-
-Everything else currently no-ops but still returns `status: completed`, so you can evolve task coverage incrementally.
+Execution is tool-driven: the planner returns a generic, open-ended plan and the execution agent performs Tripletex API actions through tools.
 
 ## Production notes
 
 - Keep `/solve` within the 300 second timeout
 - Minimize trial-and-error API calls to improve efficiency score
 - Add structured run logging and idempotency keys as you expand
-- Use an LLM planner only for extraction/planning; keep execution deterministic
+- Use LLM planning plus tool-based execution, and fail closed when planning/execution is uncertain

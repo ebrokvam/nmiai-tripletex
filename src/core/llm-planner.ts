@@ -1,51 +1,90 @@
 import type { SolveRequestBody } from "../types/solve.js";
-import type { ParsedTask } from "../types/task-plan.js";
+import type { AgentTaskPlan } from "../types/task-plan.js";
+import { startCodexThread } from "./codex-client.js";
 
-type ChatCompletionsResponse = {
-  choices?: Array<{
-    message?: {
-      content?: string | null;
-    };
-  }>;
-};
-
-const TASK_SCHEMA = {
-  name: "parsed_task",
-  strict: false,
-  schema: {
-    type: "object",
-    properties: {
-      kind: {
-        type: "string",
-        enum: ["create_employee", "create_customer", "create_invoice", "unknown"],
+const PLAN_SCHEMA = {
+  type: "object",
+  properties: {
+    status: { type: "string", enum: ["planned", "cannot_plan"] },
+    summary: { type: "string" },
+    intent: { type: "string" },
+    input_arguments: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          value: { type: "string" },
+        },
+        required: ["name", "value"],
+        additionalProperties: false,
       },
-      firstName: { type: "string" },
-      lastName: { type: "string" },
-      email: { type: "string" },
-      name: { type: "string" },
-      customerName: { type: "string" },
-      customerEmail: { type: "string" },
-      description: { type: "string" },
-      amount: { type: "number" },
-      quantity: { type: "number" },
-      invoiceDate: { type: "string" },
-      dueDate: { type: "string" },
-      reason: { type: "string" },
     },
-    required: ["kind"],
+    lookup_requests: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          method: { type: "string", enum: ["GET", "POST", "PUT", "DELETE"] },
+          path: { type: "string" },
+          purpose: { type: "string" },
+          query_hint: { type: ["string", "null"] },
+          body_hint: { type: ["string", "null"] },
+        },
+        required: ["method", "path", "purpose", "query_hint", "body_hint"],
+        additionalProperties: false,
+      },
+    },
+    mutation_requests: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          method: { type: "string", enum: ["GET", "POST", "PUT", "DELETE"] },
+          path: { type: "string" },
+          purpose: { type: "string" },
+          query_hint: { type: ["string", "null"] },
+          body_hint: { type: ["string", "null"] },
+        },
+        required: ["method", "path", "purpose", "query_hint", "body_hint"],
+        additionalProperties: false,
+      },
+    },
+    verification_requests: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          method: { type: "string", enum: ["GET", "POST", "PUT", "DELETE"] },
+          path: { type: "string" },
+          purpose: { type: "string" },
+          query_hint: { type: ["string", "null"] },
+          body_hint: { type: ["string", "null"] },
+        },
+        required: ["method", "path", "purpose", "query_hint", "body_hint"],
+        additionalProperties: false,
+      },
+    },
+    stop_conditions: { type: "array", items: { type: "string" } },
+    reason: { type: ["string", "null"] },
   },
+  required: [
+    "status",
+    "summary",
+    "intent",
+    "input_arguments",
+    "lookup_requests",
+    "mutation_requests",
+    "verification_requests",
+    "stop_conditions",
+    "reason",
+  ],
+  additionalProperties: false,
 } as const;
 
-export async function buildTaskPlanWithLLM(input: SolveRequestBody): Promise<ParsedTask | undefined> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    console.info("[solver] llm planner unavailable: OPENAI_API_KEY is missing");
-    return undefined;
-  }
-
-  const model = process.env.OPENAI_MODEL ?? "gpt-5-mini";
-  const baseUrl = (process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1").replace(/\/+$/, "");
-
+export async function buildTaskPlanWithLLM(
+  input: SolveRequestBody,
+): Promise<AgentTaskPlan> {
   const filesSummary = (input.files ?? []).map((file) => ({
     filename: file.filename,
     mime_type: file.mime_type,
@@ -56,201 +95,75 @@ export async function buildTaskPlanWithLLM(input: SolveRequestBody): Promise<Par
     prompt: input.prompt,
     files: filesSummary,
     instructions: [
-      "Extract the task into one of the supported kinds.",
-      "If information is missing or the task is unsupported, return kind=unknown with a short reason.",
-      "Do not invent fields that are not in the prompt.",
+      "Create a compact execution packet for a Tripletex action request.",
+      "Return only the minimum fields an execution agent needs.",
+      "Use status=cannot_plan only when the prompt is too ambiguous or impossible.",
+      "When status=planned, choose a short intent label and normalize important prompt values into input_arguments.",
+      "Use lookup_requests only for requests that resolve IDs or required facts before mutation.",
+      "Use mutation_requests for the main write operations. Use an empty array when no write should happen.",
+      "Use verification_requests only for checks that confirm success.",
+      "Use stop_conditions for concise blockers that should halt execution.",
+      "Keep summary and purpose text brief and operational, not explanatory.",
+      "Do not include generic reasoning, duplicate the user prompt, or write prose plans.",
+      "Always include all schema fields. Use empty arrays or null where not applicable.",
       "Supported languages include Norwegian, English, Spanish, Portuguese, Nynorsk, German, French.",
-      "If creating invoice and quantity is missing, use 1.",
     ],
   };
 
-  const response = await fetch(`${baseUrl}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a Tripletex task parser. Return only structured data that matches the JSON schema.",
-        },
-        {
-          role: "user",
-          content: JSON.stringify(payload),
-        },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: TASK_SCHEMA,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    console.warn(
-      `[solver] llm planner request failed: status=${response.status} body=${errorBody.slice(0, 500)}`,
-    );
-    return undefined;
-  }
-
-  const json = (await response.json()) as ChatCompletionsResponse;
-  const content = json.choices?.[0]?.message?.content;
-  if (!content) {
-    console.warn("[solver] llm planner response missing message content");
-    return undefined;
-  }
-
-  const parsed = safeJsonParse(content);
-  const normalized = normalizeParsedTask(parsed);
-  if (!normalized) {
-    console.warn(
-      `[solver] llm planner response did not match ParsedTask schema, raw=${content.slice(0, 500)}`,
-    );
-    return undefined;
-  }
-
-  return normalized;
-}
-
-function safeJsonParse(raw: string): unknown {
   try {
-    return JSON.parse(raw);
-  } catch {
-    return undefined;
-  }
-}
+    const thread = startCodexThread();
+    const turn = await thread.run(
+      [
+        "You are a Tripletex planning agent.",
+        "Return only structured JSON matching the schema.",
+        "",
+        JSON.stringify(payload),
+      ].join("\n"),
+      { outputSchema: PLAN_SCHEMA },
+    );
 
-function isParsedTask(value: unknown): value is ParsedTask {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const input = value as Record<string, unknown>;
-  if (typeof input.kind !== "string") {
-    return false;
-  }
-
-  switch (input.kind) {
-    case "create_employee":
-      return typeof input.firstName === "string" && typeof input.lastName === "string";
-    case "create_customer":
-      return typeof input.name === "string";
-    case "create_invoice":
-      return (
-        typeof input.customerName === "string" &&
-        typeof input.description === "string" &&
-        typeof input.amount === "number" &&
-        Number.isFinite(input.amount) &&
-        input.amount > 0 &&
-        typeof input.quantity === "number" &&
-        Number.isFinite(input.quantity) &&
-        input.quantity > 0
+    const plan = parsePlan(turn.finalResponse);
+    if (!plan) {
+      return cannotPlan(
+        `LLM planner response did not match AgentTaskPlan schema, raw=${turn.finalResponse.slice(0, 500)}`,
       );
-    case "unknown":
-      return typeof input.reason === "string" || input.reason === undefined;
-    default:
-      return false;
+    }
+
+    return plan;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return cannotPlan(`LLM planner failed: ${message}`);
   }
 }
 
-function normalizeParsedTask(value: unknown): ParsedTask | undefined {
-  if (!value || typeof value !== "object") {
-    return undefined;
-  }
-
-  const input = value as Record<string, unknown>;
-  const rawKind = String(input.kind ?? input.taskKind ?? input.action ?? "").trim();
-  const kind = normalizeKind(rawKind);
-
-  if (kind === "create_employee") {
-    const firstName = stringField(input.firstName);
-    const lastName = stringField(input.lastName);
-    if (firstName && lastName) {
-      return {
-        kind,
-        firstName,
-        lastName,
-        email: stringField(input.email),
-      };
-    }
-    return undefined;
-  }
-
-  if (kind === "create_customer") {
-    const name = stringField(input.name) ?? stringField(input.customerName) ?? stringField(input.customer);
-    if (!name) {
-      return undefined;
-    }
-    return {
-      kind,
-      name,
-      email: stringField(input.email) ?? stringField(input.customerEmail),
-    };
-  }
-
-  if (kind === "create_invoice") {
-    const customerName =
-      stringField(input.customerName) ?? stringField(input.name) ?? stringField(input.customer);
-    const description = stringField(input.description) ?? "Consulting services";
-    const amount = numberField(input.amount) ?? numberField(input.total);
-    const quantity = numberField(input.quantity) ?? 1;
-    if (!customerName || !amount || amount <= 0 || !quantity || quantity <= 0) {
-      return undefined;
-    }
-    return {
-      kind,
-      customerName,
-      customerEmail: stringField(input.customerEmail) ?? stringField(input.email),
-      description,
-      amount,
-      quantity,
-      invoiceDate: stringField(input.invoiceDate),
-      dueDate: stringField(input.dueDate),
-    };
-  }
-
+function cannotPlan(reason: string): AgentTaskPlan {
   return {
-    kind: "unknown",
-    reason: stringField(input.reason) ?? "LLM could not confidently classify task",
+    status: "cannot_plan",
+    reason,
+    summary: "Planner could not create a safe execution plan",
   };
 }
 
-function normalizeKind(kind: string): ParsedTask["kind"] {
-  const normalized = kind.toLowerCase();
-  if (["create_employee", "createemployee", "employee_create"].includes(normalized)) {
-    return "create_employee";
-  }
-  if (["create_customer", "createcustomer", "customer_create"].includes(normalized)) {
-    return "create_customer";
-  }
-  if (["create_invoice", "createinvoice", "invoice_create"].includes(normalized)) {
-    return "create_invoice";
-  }
-  return "unknown";
-}
-
-function stringField(value: unknown): string | undefined {
-  if (typeof value !== "string") {
+function parsePlan(raw: string): AgentTaskPlan | undefined {
+  const parsed = JSON.parse(raw) as AgentTaskPlan;
+  if (!parsed || typeof parsed !== "object") {
     return undefined;
   }
-  const trimmed = value.trim();
-  return trimmed || undefined;
-}
 
-function numberField(value: unknown): number | undefined {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
+  if (parsed.status === "cannot_plan") {
+    return typeof parsed.reason === "string" ? parsed : undefined;
   }
-  if (typeof value === "string") {
-    const asNumber = Number(value.replace(",", "."));
-    if (Number.isFinite(asNumber)) {
-      return asNumber;
-    }
+
+  if (parsed.status !== "planned") {
+    return undefined;
   }
-  return undefined;
+
+  return typeof parsed.intent === "string" &&
+    typeof parsed.summary === "string" &&
+    Array.isArray(parsed.input_arguments) &&
+    Array.isArray(parsed.lookup_requests) &&
+    Array.isArray(parsed.mutation_requests) &&
+    Array.isArray(parsed.verification_requests)
+    ? parsed
+    : undefined;
 }
